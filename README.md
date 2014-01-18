@@ -1,6 +1,6 @@
 # Hex0r
 
-Hex0r is some simple javascript that shows a hex viewer for binary or non-binary data. This was original based on HexViewJS, but I wanted some more options for the project I'm working on, so created this new project.
+Hex0r is some simple javascript that shows a hex viewer for binary or non-binary data. 
 
 # Example
 
@@ -57,5 +57,3 @@ Create a **div** for class **hex04rwindow**, fill out the params, and, inside th
     RklMTQAARmluZVBpeCBGNDU1ICAgAAAAAEgAAAABAAAASAAAAA==
 </div>
 ```
-
-
