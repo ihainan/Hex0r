@@ -1,0 +1,10 @@
+.hexviewerwindow { font-family: monospace; background-color: #F2F2F2; padding: 0px; }
+div.hexviewerwindow {  }
+.hexviewerwindow_table { border-collapse:collapse; border: 1px solid grey;  caption-side:bottom; }
+.hexviewerwindow_offset {background: #A2A2A2; padding-right: 0px; }
+.hexviewerwindow_visual {background: #F9F9F9; padding-left: 15px; }
+.hexviewerwindow_code {padding-left: 5px ; }
+.hexviewerwindow_code_hi {background: #F4FA58; border-left: 15px}
+.hexviewerwindow_border_start {border-left: solid #E0E0E0 1px; }
+.hexviewerwindow_border_middle {border-bottom: solid #E0E0E0 1px; border-top: solid #E0E0E0 1px;}
+.hexviewerwindow_border_end {border-right: solid #E0E0E0 1px; border-top: solid #E0E0E0 1px; }
