@@ -51,19 +51,29 @@ function base64_decode(encoded) {
 }
 
 function markup_hex0rwindow(div) {
-    var binData = base64_decode(remove_whitespace(div.text()));
-    var lineData;
+    var step = parseInt($(div).data('row-width'));
+    var wordSize = parseInt($(div).data('word-size'));
+    var rowBreak = parseInt($(div).data('row-break'));
+    var caption = $(div).data('caption');
+    var trim = $(div).data('trim').toString() == "true"; ;
+    var base64 = $(div).data('base64').toString() == "true";
     var highlightsStr = $(div).data('highlights').split(',');
+    var rawData = div.text();
+
+    if (trim == true) {
+        rawData = remove_whitespace(rawData);
+    }
+
+    if (base64 == true) {
+        rawData = base64_decode(rawData);
+    }
+    var lineData;
+
     var highlights = [];
 
     for (var hi = 0; hi < highlightsStr.length; hi++) {
         highlights.push(highlightsStr[hi].split(":"));
     }
-
-    var step = parseInt($(div).data('row-width'));
-    var wordSize = parseInt($(div).data('word-size'));
-    var rowBreak = parseInt($(div).data('row-break'));
-    var caption = $(div).data('caption');
 
     div.text("");
     div.append("<table></table>");
@@ -96,9 +106,9 @@ function markup_hex0rwindow(div) {
     if (caption)
         $("table", div).append("<caption>" + caption + "</caption>");
 
-    while (binData.length > 0) {
-        lineData = binData.slice(0, step);
-        binData = binData.slice(step);
+    while (rawData.length > 0) {
+        lineData = rawData.slice(0, step);
+        rawData = rawData.slice(step);
 
         $("table", div).addClass("hex0rwindow_table");
         $("table", div).append("<tr></tr>").addClass("hex0rwindow");
