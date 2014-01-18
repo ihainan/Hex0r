@@ -30,3 +30,32 @@ Example
 4:20:#F4FA58:This is an interesting part
 And here is a list of two highlights:
 4:20:#F4FA58:This is an interesting part,36:56:#54FAF8:This is another interesting part 
+
+# Usage
+
+Take a look at hex04_example.html for the sample.
+
+You will need to include jquery
+``` javascript
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" type="text/javascript"></script>
+````
+
+Include the style sheet 
+``` javascript
+<link rel="stylesheet" type="text/css" href="hex0r.css" />
+````
+
+Create a **div** for class **hex04rwindow**, fill out the params, and, inside the div, include the data you would like to show the viewer.  Any number of viewers can be on a page.
+
+``` javascript
+<div class="hex0rwindow" data-row-width="16" data-word-size="1" data-row-break="8"
+    data-trim="true" data-base64="true" data-caption="Hex0r Example - base 64 file, with highlighting"
+    data-highlights="16:17:#F4FA58:Initial value of SP register,128:152:#54FAF8:Portable Executable signature and header"
+    data-show-line-nums="true" title="">
+    /9j/4AAQSkZJRgABAQEASABIAAD/4RzmRXhpZgAATU0AKgAAAAgADAEPAAIAAAAJ AAAAngEQAAIAAAAQAAAAqAESAAMAAAABAAEAAAEaAAUAAAABAAAAuAEbAAUAAAAB
+    AAAAwAEoAAMAAAABAAIAAAExAAIAAAAvAAAAyAEyAAIAAAAUAAAA+AITAAMAAAAB AAIAAIKYAAIAAAAFAAABDIdpAAQAAAABAAABEsSlAAcAAAAcAAAEkAAABKxGVUpJ
+    RklMTQAARmluZVBpeCBGNDU1ICAgAAAAAEgAAAABAAAASAAAAA==
+</div>
+```
+
+
