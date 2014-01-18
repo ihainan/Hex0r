@@ -26,4 +26,7 @@ Example
 *  **base64** Base 64 decode the data in the div (if false, will show exactly that is in the div)
 *  **caption** The bottom caption for the viewer
 *  **highlights** Highlight areas of the viewer hex
-*  **show-line-nums** Show the line number on the left side. 
+*  **show-line-nums** Determines parts of the binary data to be highlighted. This string takes the format of a comma separated list of values where each highlight is a tuple of 4 values: start_offset:end_offset:color:description. For example, here is a single highlight:
+4:20:#F4FA58:This is an interesting part
+And here is a list of two highlights:
+4:20:#F4FA58:This is an interesting part,36:56:#54FAF8:This is another interesting part 
