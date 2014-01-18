@@ -11,7 +11,7 @@ Hex0r is some simple javascript that shows a hex viewer for binary or non-binary
 All parameters should be on a div of class "hex04window".  They use data attributes.
 
 Example
-```` javascript
+```` html
 <div class="hex0rwindow" data-row-width="16" data-word-size="1" data-row-break="8"
         data-trim="true" data-base64="true" data-caption="Hex0r Example - base 64 file"
         data-highlights="" data-show-line-nums="true">
@@ -36,18 +36,18 @@ And here is a list of two highlights:
 Take a look at hex04_example.html for the sample.
 
 You will need to include jquery
-``` javascript
+``` html
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" type="text/javascript"></script>
 ````
 
 Include the style sheet 
-``` javascript
+``` html
 <link rel="stylesheet" type="text/css" href="hex0r.css" />
 ````
 
 Create a **div** for class **hex04rwindow**, fill out the params, and, inside the div, include the data you would like to show the viewer.  Any number of viewers can be on a page.
 
-``` javascript
+``` html
 <div class="hex0rwindow" data-row-width="16" data-word-size="1" data-row-break="8"
     data-trim="true" data-base64="true" data-caption="Hex0r Example - base 64 file, with highlighting"
     data-highlights="16:17:#F4FA58:Initial value of SP register,128:152:#54FAF8:Portable Executable signature and header"
