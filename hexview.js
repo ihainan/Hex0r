@@ -32,7 +32,7 @@
 		}
 		
 		var BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
-		
+		 
 		function base64_decode(encoded)
 		{
 			var decoded = ""
