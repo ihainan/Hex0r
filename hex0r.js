@@ -55,9 +55,10 @@ function markup_hex0rwindow(div) {
     var wordSize = parseInt($(div).data('word-size'));
     var rowBreak = parseInt($(div).data('row-break'));
     var caption = $(div).data('caption');
+    var highlightsStr = $(div).data('highlights').split(',');
     var trim = $(div).data('trim').toString() == "true"; ;
     var base64 = $(div).data('base64').toString() == "true";
-    var highlightsStr = $(div).data('highlights').split(',');
+    var showLineNums = $(div).data('show-line-nums').toString() == "true";
     var rawData = div.text();
 
     if (trim == true) {
@@ -92,7 +93,7 @@ function markup_hex0rwindow(div) {
                 }
 
                 $("table tr td:last", div).addClass("hex0rwindow_code_hi hex0rwindow_border_middle");
-                $("table tr td:last", div).attr("style", "background-color: " + highlights[idx][2] + ";");
+                $("table tr td:last", div).attr("style", "backround-color: " + highlights[idx][2] + ";");
                 $("table tr td:last", div).attr("title", highlights[idx][3]);
 
                 runlen += 1;
@@ -113,9 +114,10 @@ function markup_hex0rwindow(div) {
         $("table", div).addClass("hex0rwindow_table");
         $("table", div).append("<tr></tr>").addClass("hex0rwindow");
 
-        $("table tr:last", div).append("<td>" + dec_to_hex8(offset) + " </td>");
-        $("table tr td:last", div).addClass("hex0rwindow_offset");
-
+        if (showLineNums == true) {
+            $("table tr:last", div).append("<td>" + dec_to_hex8(offset) + " </td>");
+            $("table tr td:last", div).addClass("hex0rwindow_offset");
+        }
         var runlen = 0;
 
         for (var idxData = 0; idxData < lineData.length; idxData += wordSize) {
