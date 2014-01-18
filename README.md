@@ -1,4 +1,4 @@
-HexViewJS
+Hexer
 =========
 
 Overview
