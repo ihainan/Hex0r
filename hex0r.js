@@ -4,7 +4,7 @@ var BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567
 function dec2_to_hex(dec) {
     if (dec < 0)
         dec = 0;
-    
+
     if (dec > 255)
         dec = 255;
 
@@ -53,17 +53,17 @@ function base64_decode(encoded) {
 function markup_hex0rwindow(div) {
     var binData = base64_decode(remove_whitespace(div.text()));
     var lineData;
-    var highlightsStr = $("form#hex0rwindow_params input[name='highlights']", div).attr("value").split(',');
+    var highlightsStr = $(div).data('highlights').split(',');
     var highlights = [];
 
     for (var hi = 0; hi < highlightsStr.length; hi++) {
         highlights.push(highlightsStr[hi].split(":"));
     }
 
-    var step = parseInt($("form#hex0rwindow_params input[name='row_width']", div).attr("value"));
-    var wordSize = parseInt($("form#hex0rwindow_params input[name='word_size']", div).attr("value"));
-    var rowBreak = parseInt($("form#hex0rwindow_params input[name='row_break']", div).attr("value"));
-    var caption = $("form#hex0rwindow_params input[name='caption']", div).attr("value");
+    var step = parseInt($(div).data('row-width'));
+    var wordSize = parseInt($(div).data('word-size'));
+    var rowBreak = parseInt($(div).data('row-break'));
+    var caption = $(div).data('caption');
 
     div.text("");
     div.append("<table></table>");
@@ -102,8 +102,8 @@ function markup_hex0rwindow(div) {
 
         $("table", div).addClass("hex0rwindow_table");
         $("table", div).append("<tr></tr>").addClass("hex0rwindow");
-        
-        $("table tr:last", div).append("<td>" + dec_to_hex8(offset) + " </td>");        
+
+        $("table tr:last", div).append("<td>" + dec_to_hex8(offset) + " </td>");
         $("table tr td:last", div).addClass("hex0rwindow_offset");
 
         var runlen = 0;
@@ -150,8 +150,8 @@ function markup_hex0rwindow(div) {
     }
 }
 
-$(document).ready(function() {
-    $("div.hex0rwindow").each(function(index) {
+$(document).ready(function () {
+    $("div.hex0rwindow").each(function (index) {
         markup_hex0rwindow($(this), index);
     });
 });
