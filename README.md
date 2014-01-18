@@ -8,7 +8,7 @@ Hex0r is some simple javascript that shows a hex viewer for binary or non-binary
 
 # Options
 
-All parameters should be on a div of class "hex04window".  They use data attributes.
+All parameters should be on a div of class "hex04window".  Data attributes are used to control it.
 
 Example
 ```` html
