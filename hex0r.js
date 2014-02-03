@@ -1,55 +1,6 @@
 var HEX = '0123456789ABCDEF';
 var BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
-function dec2_to_hex(dec) {
-    if (dec < 0)
-        dec = 0;
-
-    if (dec > 255)
-        dec = 255;
-
-    return HEX.charAt(Math.floor(dec / 16)) + HEX.charAt(dec % 16);
-}
-
-function dec_to_hex8(dec) {
-    var str = "";
-
-    for (var i = 3; i >= 0; i--) {
-        str += dec2_to_hex((dec >> (i * 8)) & 255);
-    }
-
-    return str;
-}
-
-function remove_whitespace(str) {
-    return str.replace(/\n/g, "")
-					  .replace(/\t/g, "")
-					  .replace(/ /g, "")
-					  .replace(/\r/g, "");
-}
-
-function base64_decode(encoded) {
-    var decoded = "";
-
-    for (var i = 0; i < encoded.length; i += 4) {
-        var ch0 = encoded.charAt(i + 0);
-        var ch1 = encoded.charAt(i + 1);
-        var ch2 = encoded.charAt(i + 2);
-        var ch3 = encoded.charAt(i + 3);
-
-        var index0 = BASE64_CHARS.indexOf(ch0);
-        var index1 = BASE64_CHARS.indexOf(ch1);
-        var index2 = BASE64_CHARS.indexOf(ch2);
-        var index3 = BASE64_CHARS.indexOf(ch3);
-
-        decoded += String.fromCharCode((index0 << 2) | (index1 >> 4));
-        decoded += String.fromCharCode(((index1 & 15) << 4) | (index2 >> 2));
-        decoded += String.fromCharCode(((index2 & 3) << 6) | index3);
-    }
-
-    return decoded;
-}
-
 function markup_hex0rwindow(div) {
     var step = parseInt($(div).data('row-width'));
     var wordSize = parseInt($(div).data('word-size'));
@@ -160,6 +111,55 @@ function markup_hex0rwindow(div) {
         $("table tr:last", div).append("<td>" + text + "</td>");
         $("table tr td:last", div).addClass("hex0rwindow_visual");
     }
+}
+
+function dec2_to_hex(dec) {
+    if (dec < 0)
+        dec = 0;
+
+    if (dec > 255)
+        dec = 255;
+
+    return HEX.charAt(Math.floor(dec / 16)) + HEX.charAt(dec % 16);
+}
+
+function dec_to_hex8(dec) {
+    var str = "";
+
+    for (var i = 3; i >= 0; i--) {
+        str += dec2_to_hex((dec >> (i * 8)) & 255);
+    }
+
+    return str;
+}
+
+function remove_whitespace(str) {
+    return str.replace(/\n/g, "")
+					  .replace(/\t/g, "")
+					  .replace(/ /g, "")
+					  .replace(/\r/g, "");
+}
+
+function base64_decode(encoded) {
+    var decoded = "";
+
+    for (var i = 0; i < encoded.length; i += 4) {
+        var ch0 = encoded.charAt(i + 0);
+        var ch1 = encoded.charAt(i + 1);
+        var ch2 = encoded.charAt(i + 2);
+        var ch3 = encoded.charAt(i + 3);
+
+        var index0 = BASE64_CHARS.indexOf(ch0);
+        var index1 = BASE64_CHARS.indexOf(ch1);
+        var index2 = BASE64_CHARS.indexOf(ch2);
+        var index3 = BASE64_CHARS.indexOf(ch3);
+
+        decoded += String.fromCharCode((index0 << 2) | (index1 >> 4));
+        decoded += String.fromCharCode(((index1 & 15) << 4) | (index2 >> 2));
+        decoded += String.fromCharCode(((index2 & 3) << 6) | index3);
+    }
+
+    return decoded;
 }
 
 $(document).ready(function () {

@@ -2,7 +2,7 @@
 {
 	font-family: monospace;
 	background-color: #F2F2F2;
-	padding: 0px;
+	padding: 0;
 	width: 600px;
 }
 div.hex0rwindow
@@ -17,7 +17,7 @@ div.hex0rwindow
 .hex0rwindow_offset
 {
 	background: #A2A2A2;
-	padding-right: 0px;
+	padding-right: 0;
 }
 .hex0rwindow_visual
 {
