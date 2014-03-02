@@ -1,5 +1,5 @@
-var HEX = '0123456789ABCDEF';
 var BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+var HEX = '0123456789ABCDEF';
 
 function markup_hex0rwindow(div) {
     var step = parseInt($(div).data('row-width'));
