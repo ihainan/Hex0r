@@ -1,33 +1,39 @@
 .hex0rwindow
 {
-	font-family: monospace;
 	background-color: #F2F2F2;
+	font-family: monospace;
 	padding: 0;
 	width: 600px;
 }
+
 div.hex0rwindow
 {
 }
+
 .hex0rwindow_table
 {
 	border-collapse: collapse;
 	border: 1px solid grey;
 	caption-side: bottom;
 }
+
 .hex0rwindow_offset
 {
 	background: #A2A2A2;
 	padding-right: 0;
 }
+
 .hex0rwindow_visual
 {
 	background: #F9F9F9;
 	padding-left: 15px;
 }
+
 .hex0rwindow_code
 {
 	padding-left: 1px;
 }
+
 .hex0rwindow_code_hi
 {
 	background: #F4FA58;
