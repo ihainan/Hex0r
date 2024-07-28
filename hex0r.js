@@ -1,12 +1,26 @@
 var BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 var HEX = '0123456789ABCDEF';
 
+function splitWithComma(input) {
+    if (input === "") {
+        return [];
+    }
+    return input.split(/(?<!\\),/);
+}
+
+function splitWithColon(input) {
+    if (input === "") {
+        return [];
+    }
+    return input.split(/(?<!\\):/);
+}
+
 function markup_hex0rwindow(div) {
     var step = parseInt($(div).data('row-width'));
     var wordSize = parseInt($(div).data('word-size'));
     var rowBreak = parseInt($(div).data('row-break'));
     var caption = $(div).data('caption');
-    var highlightsStr = $(div).data('highlights').split(',');
+    var highlightsStr = splitWithComma($(div).data('highlights'));
     var trim = $(div).data('trim').toString() == "true";;
     var base64 = $(div).data('base64').toString() == "true";
     var showLineNums = $(div).data('show-line-nums').toString() == "true";
@@ -16,9 +30,13 @@ function markup_hex0rwindow(div) {
         rawData = remove_whitespace(rawData);
     }
 
+    var byteArray
     if (base64 == true) {
-        rawData = base64_decode(rawData);
+        byteArray = base64ToByteArray(rawData);
+    } else {
+        byteArray = new TextEncoder().encode(rawData);
     }
+    console.log(byteArray);
     var lineData;
 
     function calculateNewIndexWithSpaces(index) {
@@ -28,12 +46,12 @@ function markup_hex0rwindow(div) {
 
     var highlights = [];
     for (var hi = 0; hi < highlightsStr.length; hi++) {
-        var splits = highlightsStr[hi].split(":")
+        var splits = splitWithColon(highlightsStr[hi])
         highlights.push(Array(
             Math.floor(splits[0]),
             Math.floor(splits[1]),
             splits[2],
-            splits[3])
+            splits[3].replace(/\\,/g, ',').replace(/\\:/g, ':'))
         )
     }
 
@@ -76,7 +94,7 @@ function markup_hex0rwindow(div) {
                 runlen += 1;
             }
         }
-    }    
+    }
 
     if (caption) {
         $("table", div).append("<caption>" + caption + "</caption>");
@@ -84,9 +102,9 @@ function markup_hex0rwindow(div) {
 
     var numIndex = 0;
     var numIndexVisual = 0;
-    while (rawData.length > 0) {
-        lineData = rawData.slice(0, step);
-        rawData = rawData.slice(step);
+    while (byteArray.length > 0) {
+        lineData = byteArray.slice(0, step);
+        byteArray = byteArray.slice(step);
 
         $("table", div).addClass("hex0rwindow_table");
         $("table", div).append("<tr></tr>").addClass("hex0rwindow");
@@ -100,7 +118,7 @@ function markup_hex0rwindow(div) {
             var num = "";
 
             for (var idxWs = 0; idxWs < wordSize; idxWs++) {
-                num += dec2_to_hex(lineData.charCodeAt(idxData + idxWs));
+                num += dec2_to_hex(lineData[idxData + idxWs]);
             }
             if (idxData == rowBreak - 1) {
                 $("table tr:last", div).append("<td>" + num + "&nbsp;&nbsp;&nbsp</td>");
@@ -118,10 +136,10 @@ function markup_hex0rwindow(div) {
         }
 
         for (var i = 0; i < lineData.length; i++) {
-            var cc = lineData.charCodeAt(i);
+            var cc = lineData[i];
 
             if ((cc >= 32) && (cc <= 126)) {
-                $("table tr:last", div).append("<td>" + lineData.charAt(i) + "</td>");
+                $("table tr:last", div).append("<td>" + String.fromCharCode(lineData[i]) + "</td>");
             } else {
                 $("table tr:last", div).append("<td>.</td>");
             }
@@ -193,8 +211,30 @@ function base64_decode(encoded) {
     return decoded;
 }
 
+function base64ToByteArray(base64) {
+    // 移除任何可能的非法字符
+    base64 = base64.replace(/[^A-Za-z0-9+/=]/g, '');
+
+    // 填充 Base64 字符串，使其长度为 4 的倍数
+    while (base64.length % 4 !== 0) {
+        base64 += '=';
+    }
+
+    try {
+        var binaryString = atob(base64);
+        var byteArray = new Uint8Array(binaryString.length);
+        for (var i = 0; i < binaryString.length; i++) {
+            byteArray[i] = binaryString.charCodeAt(i);
+        }
+        return byteArray;
+    } catch (e) {
+        console.error('Failed to decode Base64 string:', e);
+        return null;
+    }
+}
+
 $(document).ready(function () {
-    $(document).on('mouseenter', '.highlight-hover', function () {        
+    $(document).on('mouseenter', '.highlight-hover', function () {
         var bgColor = $(this).attr("data-bg-color");
         var range = $(this).attr("data-highlight-range").split(":");
         highlightRange(parseInt(range[0]), parseInt(range[1]), bgColor);
@@ -205,7 +245,7 @@ $(document).ready(function () {
         unhighlightRange(parseInt(range[0]), parseInt(range[1]));
     });
 
-    $(document).on('mouseenter', '.highlight-hover-visual', function () {        
+    $(document).on('mouseenter', '.highlight-hover-visual', function () {
         var bgColor = $(this).attr("data-bg-color");
         var range = $(this).attr("data-highlight-range").split(":");
         highlightRange(parseInt(range[0]), parseInt(range[1]), bgColor);
@@ -235,7 +275,7 @@ function highlightRange(start, end, color) {
         if (index >= start && index <= end) {
             $(this).css("background-color", color);
         }
-    });    
+    });
 }
 
 function unhighlightRange(start, end) {
@@ -251,5 +291,5 @@ function unhighlightRange(start, end) {
         if (index >= start && index <= end) {
             $(this).css("background-color", "");
         }
-    });    
+    });
 }
