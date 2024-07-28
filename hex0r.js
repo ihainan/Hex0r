@@ -65,11 +65,25 @@ function markup_hex0rwindow(div) {
         }
     }
 
+
+    function applyHighlightsForVisual(index) {
+        for (var idx = 0; idx < highlights.length; idx++) {
+            if ((index >= highlights[idx][0]) && (index <= highlights[idx][1])) {
+                $("table tr td:last", div).addClass("highlight-hover-visual");
+                $("table tr td:last", div).attr("data-bg-color", highlights[idx][2]); // Store highlight color
+                $("table tr td:last", div).attr("data-highlight-range", highlights[idx][0] + ":" + highlights[idx][1]); // Store highlight range
+                $("table tr td:last", div).attr("title", highlights[idx][3]);
+                runlen += 1;
+            }
+        }
+    }    
+
     if (caption) {
         $("table", div).append("<caption>" + caption + "</caption>");
     }
 
     var numIndex = 0;
+    var numIndexVisual = 0;
     while (rawData.length > 0) {
         lineData = rawData.slice(0, step);
         rawData = rawData.slice(step);
@@ -99,26 +113,34 @@ function markup_hex0rwindow(div) {
             numIndex += 1;
         }
 
-        var text = "";
+        if (lineData.length < step) {
+            $("table tr td:last", div).attr("colspan", Math.floor((step - lineData.length) / wordSize) + 1);
+        }
 
         for (var i = 0; i < lineData.length; i++) {
             var cc = lineData.charCodeAt(i);
 
             if ((cc >= 32) && (cc <= 126)) {
-                text = text + lineData.charAt(i);
+                $("table tr:last", div).append("<td>" + lineData.charAt(i) + "</td>");
+            } else {
+                $("table tr:last", div).append("<td>.</td>");
             }
-            else {
-                text = text + ".";
-            }
-        }
 
-        if (lineData.length < step)
-            $("table tr td:last", div).attr("colspan", Math.floor((step - lineData.length) / wordSize) + 1);
+            if (i == 0) {
+                $("table tr td:last", div).addClass("hex0rwindow_visual_first");
+            } else {
+                $("table tr td:last", div).addClass("hex0rwindow_visual_others");
+            }
+
+            $("table tr td:last", div).attr("number", numIndexVisual);
+            numIndexVisual += 1;
+            applyHighlightsForVisual(offset + i);
+        }
 
         offset += step;
 
-        $("table tr:last", div).append("<td>" + text + "</td>");
-        $("table tr td:last", div).addClass("hex0rwindow_visual");
+        // $("table tr:last", div).append("<td>" + text + "</td>");
+        // $("table tr td:last", div).addClass("hex0rwindow_visual");
     }
 }
 
@@ -183,6 +205,17 @@ $(document).ready(function () {
         unhighlightRange(parseInt(range[0]), parseInt(range[1]));
     });
 
+    $(document).on('mouseenter', '.highlight-hover-visual', function () {        
+        var bgColor = $(this).attr("data-bg-color");
+        var range = $(this).attr("data-highlight-range").split(":");
+        highlightRange(parseInt(range[0]), parseInt(range[1]), bgColor);
+    });
+
+    $(document).on('mouseleave', '.highlight-hover-visual', function () {
+        var range = $(this).attr("data-highlight-range").split(":");
+        unhighlightRange(parseInt(range[0]), parseInt(range[1]));
+    });
+
     $("div.hex0rwindow").each(function (index) {
         markup_hex0rwindow($(this), index);
     });
@@ -196,6 +229,13 @@ function highlightRange(start, end, color) {
             $(this).css("background-color", color);
         }
     });
+
+    $(".highlight-hover-visual").each(function () {
+        var index = $(this).attr("number");
+        if (index >= start && index <= end) {
+            $(this).css("background-color", color);
+        }
+    });    
 }
 
 function unhighlightRange(start, end) {
@@ -205,4 +245,11 @@ function unhighlightRange(start, end) {
             $(this).css("background-color", "");
         }
     });
+
+    $(".highlight-hover-visual").each(function () {
+        var index = $(this).attr("number");
+        if (index >= start && index <= end) {
+            $(this).css("background-color", "");
+        }
+    });    
 }
