@@ -7,7 +7,7 @@ function markup_hex0rwindow(div) {
     var rowBreak = parseInt($(div).data('row-break'));
     var caption = $(div).data('caption');
     var highlightsStr = $(div).data('highlights').split(',');
-    var trim = $(div).data('trim').toString() == "true"; ;
+    var trim = $(div).data('trim').toString() == "true";;
     var base64 = $(div).data('base64').toString() == "true";
     var showLineNums = $(div).data('show-line-nums').toString() == "true";
     var rawData = div.text();
@@ -21,12 +21,23 @@ function markup_hex0rwindow(div) {
     }
     var lineData;
 
-    var highlights = [];
-
-    for (var hi = 0; hi < highlightsStr.length; hi++) {
-        highlights.push(highlightsStr[hi].split(":"));
+    function calculateNewIndexWithSpaces(index) {
+        var l = parseInt(index / 16);
+        return index + parseInt((index - l * 16) / 8) + l;
     }
 
+    var highlights = [];
+    for (var hi = 0; hi < highlightsStr.length; hi++) {
+        var splits = highlightsStr[hi].split(":")
+        highlights.push(Array(
+            Math.floor(splits[0]),
+            Math.floor(splits[1]),
+            splits[2],
+            splits[3])
+        )
+    }
+
+    console.log(highlights);
     div.text("");
     div.append("<table></table>");
 
@@ -35,29 +46,30 @@ function markup_hex0rwindow(div) {
     function applyHighlights(index) {
         for (var idx = 0; idx < highlights.length; idx++) {
             if ((index >= highlights[idx][0]) && (index <= highlights[idx][1])) {
-                if (index == highlights[idx][0]) {
-                    $("table tr td:last", div).addClass("hex0rwindow_border_start");
-                }
+                // if (index == highlights[idx][0]) {
+                //     $("table tr td:last", div).addClass("hex0rwindow_border_start");
+                // }
 
-                if (index == highlights[idx][1]) {
-                    $("table tr td:last", div).addClass("hex0rwindow_border_end");
-                }
+                // if (index == highlights[idx][1]) {
+                //     $("table tr td:last", div).addClass("hex0rwindow_border_end");
+                // }
 
-                $("table tr td:last", div).addClass("hex0rwindow_code_hi hex0rwindow_border_middle");
-                $("table tr td:last", div).attr("style", "backround-color: " + highlights[idx][2] + ";");
+                $("table tr td:last", div).addClass("highlight-hover");
+                $("table tr td:last", div).attr("data-bg-color", highlights[idx][2]); // Store highlight color
+                $("table tr td:last", div).attr("data-highlight-range", highlights[idx][0] + ":" + highlights[idx][1]); // Store highlight range
                 $("table tr td:last", div).attr("title", highlights[idx][3]);
-
                 runlen += 1;
-            }
-            else {
+            } else {
                 $("table tr td:last", div).addClass("hex0rwindow_code");
             }
         }
     }
 
-    if (caption)
+    if (caption) {
         $("table", div).append("<caption>" + caption + "</caption>");
+    }
 
+    var numIndex = 0;
     while (rawData.length > 0) {
         lineData = rawData.slice(0, step);
         rawData = rawData.slice(step);
@@ -70,7 +82,6 @@ function markup_hex0rwindow(div) {
             $("table tr td:last", div).addClass("hex0rwindow_offset");
         }
         var runlen = 0;
-
         for (var idxData = 0; idxData < lineData.length; idxData += wordSize) {
             var num = "";
 
@@ -79,15 +90,13 @@ function markup_hex0rwindow(div) {
             }
             if (idxData == rowBreak - 1) {
                 $("table tr:last", div).append("<td>" + num + "&nbsp;&nbsp;&nbsp</td>");
-
                 applyHighlights(offset + idxData);
-
-            }
-            else {
-                $("table tr:last", div).append("<td>" + num + " </td>");
-
+            } else {
+                $("table tr:last", div).append("<td>" + num + "</td>");
                 applyHighlights(offset + idxData);
             }
+            $("table tr td:last", div).attr("number", numIndex);
+            numIndex += 1;
         }
 
         var text = "";
@@ -135,9 +144,9 @@ function dec_to_hex8(dec) {
 
 function remove_whitespace(str) {
     return str.replace(/\n/g, "")
-					  .replace(/\t/g, "")
-					  .replace(/ /g, "")
-					  .replace(/\r/g, "");
+        .replace(/\t/g, "")
+        .replace(/ /g, "")
+        .replace(/\r/g, "");
 }
 
 function base64_decode(encoded) {
@@ -163,7 +172,37 @@ function base64_decode(encoded) {
 }
 
 $(document).ready(function () {
+    $(document).on('mouseenter', '.highlight-hover', function () {        
+        var bgColor = $(this).attr("data-bg-color");
+        var range = $(this).attr("data-highlight-range").split(":");
+        highlightRange(parseInt(range[0]), parseInt(range[1]), bgColor);
+    });
+
+    $(document).on('mouseleave', '.highlight-hover', function () {
+        var range = $(this).attr("data-highlight-range").split(":");
+        unhighlightRange(parseInt(range[0]), parseInt(range[1]));
+    });
+
     $("div.hex0rwindow").each(function (index) {
         markup_hex0rwindow($(this), index);
     });
 });
+
+
+function highlightRange(start, end, color) {
+    $(".highlight-hover").each(function () {
+        var index = $(this).attr("number");
+        if (index >= start && index <= end) {
+            $(this).css("background-color", color);
+        }
+    });
+}
+
+function unhighlightRange(start, end) {
+    $(".highlight-hover").each(function () {
+        var index = $(this).attr("number");
+        if (index >= start && index <= end) {
+            $(this).css("background-color", "");
+        }
+    });
+}
