@@ -36,14 +36,8 @@ function markup_hex0rwindow(div) {
     } else {
         byteArray = new TextEncoder().encode(rawData);
     }
-    console.log(byteArray);
+    // console.log(byteArray);
     var lineData;
-
-    function calculateNewIndexWithSpaces(index) {
-        var l = parseInt(index / 16);
-        return index + parseInt((index - l * 16) / 8) + l;
-    }
-
     var highlights = [];
     for (var hi = 0; hi < highlightsStr.length; hi++) {
         var splits = splitWithColon(highlightsStr[hi])
@@ -55,7 +49,7 @@ function markup_hex0rwindow(div) {
         )
     }
 
-    console.log(highlights);
+    // console.log(highlights);
     div.text("");
     div.append("<table></table>");
 
@@ -64,15 +58,7 @@ function markup_hex0rwindow(div) {
     function applyHighlights(index) {
         for (var idx = 0; idx < highlights.length; idx++) {
             if ((index >= highlights[idx][0]) && (index <= highlights[idx][1])) {
-                // if (index == highlights[idx][0]) {
-                //     $("table tr td:last", div).addClass("hex0rwindow_border_start");
-                // }
-
-                // if (index == highlights[idx][1]) {
-                //     $("table tr td:last", div).addClass("hex0rwindow_border_end");
-                // }
-
-                $("table tr td:last", div).addClass("highlight-hover");
+                $("table tr td:last", div).addClass("hex0rwindow_highlight_hover");
                 $("table tr td:last", div).attr("data-bg-color", highlights[idx][2]); // Store highlight color
                 $("table tr td:last", div).attr("data-highlight-range", highlights[idx][0] + ":" + highlights[idx][1]); // Store highlight range
                 $("table tr td:last", div).attr("title", highlights[idx][3]);
@@ -87,7 +73,7 @@ function markup_hex0rwindow(div) {
     function applyHighlightsForVisual(index) {
         for (var idx = 0; idx < highlights.length; idx++) {
             if ((index >= highlights[idx][0]) && (index <= highlights[idx][1])) {
-                $("table tr td:last", div).addClass("highlight-hover-visual");
+                $("table tr td:last", div).addClass("hex0rwindow_highlight_hover_visual");
                 $("table tr td:last", div).attr("data-bg-color", highlights[idx][2]); // Store highlight color
                 $("table tr td:last", div).attr("data-highlight-range", highlights[idx][0] + ":" + highlights[idx][1]); // Store highlight range
                 $("table tr td:last", div).attr("title", highlights[idx][3]);
@@ -156,9 +142,6 @@ function markup_hex0rwindow(div) {
         }
 
         offset += step;
-
-        // $("table tr:last", div).append("<td>" + text + "</td>");
-        // $("table tr td:last", div).addClass("hex0rwindow_visual");
     }
 }
 
@@ -234,24 +217,24 @@ function base64ToByteArray(base64) {
 }
 
 $(document).ready(function () {
-    $(document).on('mouseenter', '.highlight-hover', function () {
+    $(document).on('mouseenter', '.hex0rwindow_highlight_hover', function () {
         var bgColor = $(this).attr("data-bg-color");
         var range = $(this).attr("data-highlight-range").split(":");
         highlightRange(parseInt(range[0]), parseInt(range[1]), bgColor);
     });
 
-    $(document).on('mouseleave', '.highlight-hover', function () {
+    $(document).on('mouseleave', '.hex0rwindow_highlight_hover', function () {
         var range = $(this).attr("data-highlight-range").split(":");
         unhighlightRange(parseInt(range[0]), parseInt(range[1]));
     });
 
-    $(document).on('mouseenter', '.highlight-hover-visual', function () {
+    $(document).on('mouseenter', '.hex0rwindow_highlight_hover_visual', function () {
         var bgColor = $(this).attr("data-bg-color");
         var range = $(this).attr("data-highlight-range").split(":");
         highlightRange(parseInt(range[0]), parseInt(range[1]), bgColor);
     });
 
-    $(document).on('mouseleave', '.highlight-hover-visual', function () {
+    $(document).on('mouseleave', '.hex0rwindow_highlight_hover_visual', function () {
         var range = $(this).attr("data-highlight-range").split(":");
         unhighlightRange(parseInt(range[0]), parseInt(range[1]));
     });
@@ -263,14 +246,14 @@ $(document).ready(function () {
 
 
 function highlightRange(start, end, color) {
-    $(".highlight-hover").each(function () {
+    $(".hex0rwindow_highlight_hover").each(function () {
         var index = $(this).attr("number");
         if (index >= start && index <= end) {
             $(this).css("background-color", color);
         }
     });
 
-    $(".highlight-hover-visual").each(function () {
+    $(".hex0rwindow_highlight_hover_visual").each(function () {
         var index = $(this).attr("number");
         if (index >= start && index <= end) {
             $(this).css("background-color", color);
@@ -279,14 +262,14 @@ function highlightRange(start, end, color) {
 }
 
 function unhighlightRange(start, end) {
-    $(".highlight-hover").each(function () {
+    $(".hex0rwindow_highlight_hover").each(function () {
         var index = $(this).attr("number");
         if (index >= start && index <= end) {
             $(this).css("background-color", "");
         }
     });
 
-    $(".highlight-hover-visual").each(function () {
+    $(".hex0rwindow_highlight_hover_visual").each(function () {
         var index = $(this).attr("number");
         if (index >= start && index <= end) {
             $(this).css("background-color", "");
