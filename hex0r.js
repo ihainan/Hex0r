@@ -1,5 +1,5 @@
 var BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-var HEX = '0123456789ABCDEF';
+var HEX = "0123456789ABCDEF";
 
 function splitWithComma(input) {
     if (input === "") {
@@ -16,15 +16,29 @@ function splitWithColon(input) {
 }
 
 function markup_hex0rwindow(div) {
-    var step = parseInt($(div).data('row-width'));
-    var wordSize = parseInt($(div).data('word-size'));
-    var rowBreak = parseInt($(div).data('row-break'));
-    var caption = $(div).data('caption');
-    var highlightsStr = splitWithComma($(div).data('highlights'));
-    var trim = $(div).data('trim').toString() == "true";;
-    var base64 = $(div).data('base64').toString() == "true";
-    var showLineNums = $(div).data('show-line-nums').toString() == "true";
+    var step = parseInt($(div).data("row-width"));
+    var wordSize = parseInt($(div).data("word-size"));
+    var rowBreak = parseInt($(div).data("row-break"));
+    var caption = $(div).data("caption");
+    var highlightsStr = splitWithComma($(div).data("highlights"));
+    var trim = $(div).data("trim").toString() == "true";
+    var base64 = $(div).data("base64").toString() == "true";
+    var showLineNums = $(div).data("show-line-nums").toString() == "true";
+    var highlightOnHoverOnly = $(div).data("highlight-on-hover-only").toString() == "true";
     var rawData = div.text();
+
+    if (highlightOnHoverOnly) {
+        $(div).on("mouseenter", ".hex0rwindow_highlight_hover, .hex0rwindow_highlight_hover_visual", function () {
+            var bgColor = $(this).attr("data-bg-color");
+            var range = $(this).attr("data-highlight-range").split(":");
+            highlightRange(parseInt(range[0]), parseInt(range[1]), bgColor, div);
+        });
+
+        $(div).on("mouseleave", ".hex0rwindow_highlight_hover, .hex0rwindow_highlight_hover_visual", function () {
+            var range = $(this).attr("data-highlight-range").split(":");
+            unhighlightRange(parseInt(range[0]), parseInt(range[1]), div);
+        });
+    }
 
     if (trim == true) {
         rawData = remove_whitespace(rawData);
@@ -45,7 +59,7 @@ function markup_hex0rwindow(div) {
             Math.floor(splits[0]),
             Math.floor(splits[1]),
             splits[2],
-            splits[3].replace(/\\,/g, ',').replace(/\\:/g, ':'))
+            splits[3].replace(/\\,/g, ",").replace(/\\:/g, ":"))
         )
     }
 
@@ -62,6 +76,9 @@ function markup_hex0rwindow(div) {
                 $("table tr td:last", div).attr("data-bg-color", highlights[idx][2]); // Store highlight color
                 $("table tr td:last", div).attr("data-highlight-range", highlights[idx][0] + ":" + highlights[idx][1]); // Store highlight range
                 $("table tr td:last", div).attr("title", highlights[idx][3]);
+                if (!highlightOnHoverOnly) {
+                    $("table tr td:last", div).css("background-color", highlights[idx][2]);
+                }
                 runlen += 1;
             } else {
                 $("table tr td:last", div).addClass("hex0rwindow_code");
@@ -77,6 +94,9 @@ function markup_hex0rwindow(div) {
                 $("table tr td:last", div).attr("data-bg-color", highlights[idx][2]); // Store highlight color
                 $("table tr td:last", div).attr("data-highlight-range", highlights[idx][0] + ":" + highlights[idx][1]); // Store highlight range
                 $("table tr td:last", div).attr("title", highlights[idx][3]);
+                if (!highlightOnHoverOnly) {
+                    $("table tr td:last", div).css("background-color", highlights[idx][2]);
+                }
                 runlen += 1;
             }
         }
@@ -196,11 +216,11 @@ function base64_decode(encoded) {
 
 function base64ToByteArray(base64) {
     // 移除任何可能的非法字符
-    base64 = base64.replace(/[^A-Za-z0-9+/=]/g, '');
+    base64 = base64.replace(/[^A-Za-z0-9+/=]/g, "");
 
     // 填充 Base64 字符串，使其长度为 4 的倍数
     while (base64.length % 4 !== 0) {
-        base64 += '=';
+        base64 += "=";
     }
 
     try {
@@ -211,49 +231,26 @@ function base64ToByteArray(base64) {
         }
         return byteArray;
     } catch (e) {
-        console.error('Failed to decode Base64 string:', e);
+        console.error("Failed to decode Base64 string:", e);
         return null;
     }
 }
 
 $(document).ready(function () {
-    $(document).on('mouseenter', '.hex0rwindow_highlight_hover', function () {
-        var bgColor = $(this).attr("data-bg-color");
-        var range = $(this).attr("data-highlight-range").split(":");
-        highlightRange(parseInt(range[0]), parseInt(range[1]), bgColor);
-    });
-
-    $(document).on('mouseleave', '.hex0rwindow_highlight_hover', function () {
-        var range = $(this).attr("data-highlight-range").split(":");
-        unhighlightRange(parseInt(range[0]), parseInt(range[1]));
-    });
-
-    $(document).on('mouseenter', '.hex0rwindow_highlight_hover_visual', function () {
-        var bgColor = $(this).attr("data-bg-color");
-        var range = $(this).attr("data-highlight-range").split(":");
-        highlightRange(parseInt(range[0]), parseInt(range[1]), bgColor);
-    });
-
-    $(document).on('mouseleave', '.hex0rwindow_highlight_hover_visual', function () {
-        var range = $(this).attr("data-highlight-range").split(":");
-        unhighlightRange(parseInt(range[0]), parseInt(range[1]));
-    });
-
     $("div.hex0rwindow").each(function (index) {
         markup_hex0rwindow($(this), index);
     });
 });
 
-
-function highlightRange(start, end, color) {
-    $(".hex0rwindow_highlight_hover").each(function () {
+function highlightRange(start, end, color, context) {
+    $(context).find(".hex0rwindow_highlight_hover").each(function () {
         var index = $(this).attr("number");
         if (index >= start && index <= end) {
             $(this).css("background-color", color);
         }
     });
 
-    $(".hex0rwindow_highlight_hover_visual").each(function () {
+    $(context).find(".hex0rwindow_highlight_hover_visual").each(function () {
         var index = $(this).attr("number");
         if (index >= start && index <= end) {
             $(this).css("background-color", color);
@@ -261,15 +258,15 @@ function highlightRange(start, end, color) {
     });
 }
 
-function unhighlightRange(start, end) {
-    $(".hex0rwindow_highlight_hover").each(function () {
+function unhighlightRange(start, end, context) {
+    $(context).find(".hex0rwindow_highlight_hover").each(function () {
         var index = $(this).attr("number");
         if (index >= start && index <= end) {
             $(this).css("background-color", "");
         }
     });
 
-    $(".hex0rwindow_highlight_hover_visual").each(function () {
+    $(context).find(".hex0rwindow_highlight_hover_visual").each(function () {
         var index = $(this).attr("number");
         if (index >= start && index <= end) {
             $(this).css("background-color", "");
