@@ -12,6 +12,11 @@
     caption-side: bottom;
 }
 
+.hex0rwindow_table caption {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 
 .hex0rwindow_offset {
     background: #A2A2A2;
@@ -65,7 +70,7 @@
     background-color: initial;
 }
 
-.hex0rwindow_hex0rwindow_highlight_hover_visual:hover {
+.hex0rwindow_highlight_hover_visual:hover {
     /* 设置初始背景颜色 */
     background-color: initial;
 }
