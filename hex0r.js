@@ -16,15 +16,25 @@ function splitWithColon(input) {
 }
 
 function markup_hex0rwindow(div) {
-    var step = parseInt($(div).data("row-width"));
-    var wordSize = parseInt($(div).data("word-size"));
-    var rowBreak = parseInt($(div).data("row-break"));
-    var caption = $(div).data("caption");
-    var highlightsStr = splitWithComma($(div).data("highlights"));
-    var trim = $(div).data("trim").toString() == "true";
-    var base64 = $(div).data("base64").toString() == "true";
-    var showLineNums = $(div).data("show-line-nums").toString() == "true";
-    var highlightOnHoverOnly = $(div).data("highlight-on-hover-only").toString() == "true";
+    var defaultValueForStep = 16;
+    var defaultValueForWordSize = 1;
+    var defaultValueForRowBreak = 8;
+    var defaultValueForCaption = "";
+    var defaultValueForHighlightsStr = "";
+    var defaultValueForTrim = true;
+    var defaultValueForBase64 = false;
+    var defaultValueForShowLineNums = true;
+    var defaultValueForHighlightOnHoverOnly = false;
+
+    var step = $(div).data("row-width") !== undefined ? parseInt($(div).data("row-width")) : defaultValueForStep;
+    var wordSize = $(div).data("word-size") !== undefined ? parseInt($(div).data("word-size")) : defaultValueForWordSize;
+    var rowBreak = $(div).data("row-break") !== undefined ? parseInt($(div).data("row-break")) : defaultValueForRowBreak;
+    var caption = $(div).data("caption") !== undefined ? $(div).data("caption") : defaultValueForCaption;
+    var highlightsStr = $(div).data("highlights") !== undefined ? splitWithComma($(div).data("highlights")) : defaultValueForHighlightsStr;
+    var trim = $(div).data("trim") !== undefined ? $(div).data("trim").toString() == "true" : defaultValueForTrim;
+    var base64 = $(div).data("base64") !== undefined ? $(div).data("base64").toString() == "true" : defaultValueForBase64;
+    var showLineNums = $(div).data("show-line-nums") !== undefined ? $(div).data("show-line-nums").toString() == "true" : defaultValueForShowLineNums;
+    var highlightOnHoverOnly = $(div).data("highlight-on-hover-only") !== undefined ? $(div).data("highlight-on-hover-only").toString() == "true" : defaultValueForHighlightOnHoverOnly;
     var rawData = div.text();
 
     if (highlightOnHoverOnly) {
