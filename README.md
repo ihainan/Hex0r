@@ -1,10 +1,28 @@
-# Hex0r
+# Hex0r+
 
-Hex0r is some simple javascript that shows a hex viewer for binary or non-binary data. 
+hex0r+ is a lightweight library for displaying hexadecimal and ASCII data in a table format. This project is a fork of [gratajik's Hex0r project](https://github.com/gratajik/Hex0r). It builds upon the original by fixing various bugs and adding several new features to enhance functionality.
 
-# Example
+# Online Demo
 
-![alt tag](http://raw.github.com/gratajik/Hex0r/master/help/example_screenshot.PNG)
+https://h.ihainan.me/hex/
+
+# Screenshots
+
+Display raw text:
+
+![raw_text](https://imgur.ihainan.me/mfczqQB.png)
+
+Display a byte array (base64 encoded):
+
+![byte_array](https://imgur.ihainan.me/mfczqQB.png)
+
+Highlight hex area:
+
+![highlight_area](https://imgur.ihainan.me/omliFks.png)
+
+Highlight hex area when mouse-over:
+
+![mouse-over](https://imgur.ihainan.me/GGsttE5.png)
 
 # Options
 
@@ -12,32 +30,49 @@ All parameters should be on a div of class "hex04window".  Data attributes are u
 
 Example
 ```` html
-<div class="hex0rwindow" data-row-width="16" data-word-size="1" data-row-break="8"
-        data-trim="true" data-base64="true" data-caption="Hex0r Example - base 64 file"
-        data-highlights="" data-show-line-nums="true">
-       Some data to show in the viewer
+<div class="hex0rwindow" data-row-width="16" data-word-size="1" data-row-break="8" data-trim="true"
+    data-base64="true" data-caption="SSH Protocol - Client's Algorithm List" data-highlight-on-hover-only="true"
+    data-highlights="
+        0:3:#F4FA58: Packet Length (= 196) // 4 bytes,
+        4:4:#F4FA58: Padding Length (= 6) // 1 byte,
+        5:5:#F4FA58: SSH_MSG_KEXINIT // 1 byte,
+        6:21:#F4FA58: Cookie // 16,
+        22:94:#F4FA58: kex_algorithms // 4 + 69 bytes,
+        95:110:#F4FA58: server_host_key_algorithms // 4 + 12 bytes,
+        111:124:#F4FA58: encryption_algorithms_client_to_server // 4 + 10 bytes,
+        125:138:#F4FA58: encryption_algorithms_server_to_client // 4 + 10 bytes,
+        139:151:#F4FA58: mac_algorithms_client_to_server // 4 + 9 bytes,
+        152:164:#F4FA58: mac_algorithms_server_to_client // 4 + 9 bytes,
+        165:172:#F4FA58: compression_algorithms_client_to_server // 4 + 4 bytes,
+        173:180:#F4FA58: compression_algorithms_server_to_client // 4 + 4 bytes,
+        181:184:#F4FA58: languages_client_to_server // 4 + 0 bytes,
+        185:188:#F4FA58: languages_client_to_server // 4 + 0 bytes,
+        189:189:#F4FA58: first_kex_packet_follows // 1 byte,
+        190:193:#F4FA58: 0 (int\,reserved for future extension) // 4 bytes,
+        194:199:#F4FA58: Padding // 6 bytes" data-show-line-nums="true"
+    title="SSH Protocol - Client's Algorithm List">
+    AAAAxAYUbzQ63GkVhEqdhC02TJzuywAAAEVkaWZmaWUtaGVsbG1hbi1ncm91cDE0LXNoYTI1NixleHQtaW5mby1jLGtleC1zdHJpY3QtYy12MDBAb3BlbnNzaC5jb20AAAAMcnNhLXNoYTItNTEyAAAACmFlczI1Ni1jdHIAAAAKYWVzMjU2LWN0cgAAAAlobWFjLXNoYTEAAAAJaG1hYy1zaGExAAAABG5vbmUAAAAEbm9uZQAAAAAAAAAAAAAAAAAAAAAAAAA=
 </div>
 ````
 
-*  **row_width** The number of bytes to show per row
-*  **word-size** The word size to show. Allows you to show the binary data in 1, 2 or 4 (or more) byte groups.
-*  **row-break** Break between groups
-*  **trim** Trim whitespace
-*  **base64** Base 64 decode the data in the div (if false, will show exactly that is in the div)
-*  **caption** The bottom caption for the viewer
-*  **highlights** Highlight areas of the viewer hex
-*  **show-line-nums** Determines parts of the binary data to be highlighted. This string takes the format of a comma separated list of values where each highlight is a tuple of 4 values: start_offset:end_offset:color:description. For example, here is a single highlight:
-4:20:#F4FA58:This is an interesting part
-And here is a list of two highlights:
-4:20:#F4FA58:This is an interesting part,36:56:#54FAF8:This is another interesting part 
+
+* **data-row-width**: Number of bytes per row.
+* **data-word-size**: Number of bytes per word.
+* **data-row-break**: Number of bytes before a visual break.
+* **data-base64**: Boolean indicating if input data is base64 encoded.
+* **data-trim**: Boolean indicating if whitespace should be trimmed from input.
+* **data-caption**: Caption text for the table.
+* **data-highlight-on-hover-only**: Boolean to enable/disable highlight on hover only.
+* **data-show-line-nums**: Boolean to show/hide line numbers.
+* **data-highlights**: Comma-separated ranges, colors and hints for highlighting.
 
 # Usage
 
-Take a look at hex04_example.html for the sample.
+Take a look at hex0r_example.html for the sample.
 
 You will need to include jquery
 ``` html
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
 ````
 
 Include the style sheet 
@@ -48,12 +83,12 @@ Include the style sheet
 Create a **div** for class **hex04rwindow**, fill out the params, and, inside the div, include the data you would like to show the viewer.  Any number of viewers can be on a page.
 
 ``` html
-<div class="hex0rwindow" data-row-width="16" data-word-size="1" data-row-break="8"
-    data-trim="true" data-base64="true" data-caption="Hex0r Example - base 64 file, with highlighting"
-    data-highlights="16:17:#F4FA58:Initial value of SP register,128:152:#54FAF8:Portable Executable signature and header"
-    data-show-line-nums="true" title="">
-    /9j/4AAQSkZJRgABAQEASABIAAD/4RzmRXhpZgAATU0AKgAAAAgADAEPAAIAAAAJ AAAAngEQAAIAAAAQAAAAqAESAAMAAAABAAEAAAEaAAUAAAABAAAAuAEbAAUAAAAB
-    AAAAwAEoAAMAAAABAAIAAAExAAIAAAAvAAAAyAEyAAIAAAAUAAAA+AITAAMAAAAB AAIAAIKYAAIAAAAFAAABDIdpAAQAAAABAAABEsSlAAcAAAAcAAAEkAAABKxGVUpJ
+<div class="hex0rwindow" data-row-width="16" data-word-size="1" data-row-break="8" data-trim="true"
+    data-base64="true" data-caption="Hex0r Example - base 64 file" data-highlights="" data-show-line-nums="true">
+    /9j/4AAQSkZJRgABAQEASABIAAD/4RzmRXhpZgAATU0AKgAAAAgADAEPAAIAAAAJ
+    AAAAngEQAAIAAAAQAAAAqAESAAMAAAABAAEAAAEaAAUAAAABAAAAuAEbAAUAAAAB
+    AAAAwAEoAAMAAAABAAIAAAExAAIAAAAvAAAAyAEyAAIAAAAUAAAA+AITAAMAAAAB
+    AAIAAIKYAAIAAAAFAAABDIdpAAQAAAABAAABEsSlAAcAAAAcAAAEkAAABKxGVUpJ
     RklMTQAARmluZVBpeCBGNDU1ICAgAAAAAEgAAAABAAAASAAAAA==
 </div>
 ```
